@@ -7,21 +7,34 @@ import java.util.List;
 
 public class My {
     public static List<String> result(int[] nums){
-        String[] result = new String[]{};
-        result[0] = Integer.toString(nums[0]);
 
-        int c = 0;
+        if(nums.length == 0)
+            return new ArrayList<String>();
 
-        for(int i = 1; i < nums.length; i++){
-            if(nums[i] == nums[i - 1] + 1)
-                continue;
-            if (!result[c].equals(Integer.toString(nums[i - 1]))){
-                result[c] += "->" + Integer.toString(nums[i - 1]);
+        List result = new ArrayList<String>();
+        int tmp = nums[0];
+        String string;
+        boolean isPreviousePlusOne = false;
+
+        for(int i = 1; i < nums.length; i++) {
+            if(nums[i] == nums[i-1] + 1) {
+                isPreviousePlusOne = true;
+            }else{
+                isPreviousePlusOne = false;
+                string = Integer.toString(tmp);
+                if(nums[i - 1] != tmp){
+                    string += "->" + nums[i-1];
+                }
+                result.add(string);
+                tmp = nums[i];
             }
-            c++;
-            result[c] = Integer.toString(nums[i]);
         }
 
-        return Arrays.asList(result);
+        if(isPreviousePlusOne)
+            result.add(Integer.toString(tmp) + "->" + Integer.toString(nums[nums.length - 1]));
+        else
+            result.add(Integer.toString(tmp));
+
+        return result;
     }
 }

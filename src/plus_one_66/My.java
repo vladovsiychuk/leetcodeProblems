@@ -1,28 +1,39 @@
 package plus_one_66;
 
-public class My {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-    private static int[] tmp;
+public class My {
 
     public static int[] result(int[] digits) {
 
-        tmp = digits;
+        List result = new ArrayList<Integer>();
+        boolean incrementOther = true;
 
-        if(tmp[tmp.length - 1] == 9) {
-            tmp[tmp.length - 1] = 0;
-            incrementPreviouse(tmp.length - 2);
-        }else
-            tmp[tmp.length - 1] = tmp[tmp.length - 1] + 1;
-
-        return tmp;
-    }
-
-    private static void incrementPreviouse(int index) {
-        if(tmp[index] == 9){
-            tmp[index] = 0;
-            incrementPreviouse(index - 1);
+        for (int i = digits.length - 1; i >= 0; i--) {
+            if(incrementOther == true) {
+                if (digits[i] == 9){
+                    result.add(0,0);
+                    incrementOther = true;
+                }else {
+                    result.add(0, digits[i] + 1);
+                    incrementOther = false;
+                }
+            }else{
+                result.add(0,digits[i]);
+            }
         }
 
-        tmp[index] = tmp[index]++;
+        if (incrementOther == true)
+            result.add(0,1);
+
+        int[] array = new int[result.size()];
+
+        for(int i=0; i < result.size(); i++) {
+            array[i] = (int) result.get(i);
+        }
+
+        return array;
     }
 }
