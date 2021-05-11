@@ -3,18 +3,20 @@ package remove_duplicates_from_sorted_array_26;
 public class My {
     public static int result(int nums[]){
 
-        if(nums.length == 0)
-            return 0;
-        else if(nums.length == 1)
-            return 1;
+//        Input: nums = [0,1,2,3,4,2,2,3,3,4]
+//		                            ^r
+//        Output: 5, nums = [0,1,2,3,4]
 
-        int sum = 1;
-        for(int i = 0; i < nums.length; i++){
-            if (nums[i] != nums[i-1])
-                sum+=1;
+        int left = 0;
+
+        for(int right = 1; right < nums.length; right++){
+            if(nums[right] != nums[left]){
+                left++;
+                nums[left] = nums[right];
+            }
         }
 
-        return sum;
+        return left + 1;
     }
 }
 

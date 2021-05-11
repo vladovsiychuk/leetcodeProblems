@@ -1,8 +1,8 @@
-package remove_duplicates_from_sorted_array_26;
+package reverse_linked_list_206;
 
 public class Main {
     public static void main(String args[]) {
-        System.out.println(My.result(new int[]{0,0,1,1,1,2,2,3,3,4}));
+        System.out.println(My.result(new ListNode(1, new ListNode(2, new ListNode(3)))));
 //        System.out.println(Solution.result());
     }
 }
