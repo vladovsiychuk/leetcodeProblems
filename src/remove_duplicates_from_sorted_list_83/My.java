@@ -10,6 +10,7 @@ public class My {
 
         ListNode res = new ListNode();
 
+
         
         ListNode slow = head;
         ListNode fast = head.next;
