@@ -9,6 +9,7 @@ public class My {
         else if (head.next == null) return head;
 
         ListNode res = new ListNode();
+
         ListNode slow = head;
         ListNode fast = head.next;
         ListNode tail = res;
