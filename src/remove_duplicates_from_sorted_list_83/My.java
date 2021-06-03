@@ -6,29 +6,22 @@ public class My {
     public static ListNode result(ListNode head){
 
         if(head == null) return null;
-        else if (head.next == null) return head;
+        if(head.next == null) return head;
 
         ListNode res = new ListNode();
-
-
-        
         ListNode slow = head;
         ListNode fast = head.next;
-        ListNode tail = res;
-        tail.next = slow;
-        tail = tail.next;
+        res.next = slow;
+        slow.next = null;
 
-        while(fast != null){
-            if (slow.val != fast.val){
-                slow = fast;
+        while (fast != null) {
+            if (fast.val != slow.val) {
+                slow.next = fast;
+                slow = slow.next;
                 fast = fast.next;
-                tail.next = slow;
-                tail = tail.next;
-            }
-            if(fast != null && fast.next != null)
+                slow.next = null;
+            }else
                 fast = fast.next;
-            else
-                fast = null;
         }
 
         return res.next;

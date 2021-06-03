@@ -1,27 +1,30 @@
 package reverse_linked_list_206;
 
-public class My {
-    private static ListNode res = new ListNode(-5002);
+import java.util.Stack;
 
+public class My {
     public static ListNode result(ListNode head){
 
-        if(head == null)
-            return null;
+            if (head == null) return null;
+            if (head.next == null) return head;
 
-        function(head);
+            Stack<Integer> stack = new Stack<>();
+            ListNode res = new ListNode();
+            ListNode tail = new ListNode();
+            tail = res;
 
-        return res;
-    }
+            while (head != null) {
+                stack.push(head.val);
+                head = head.next;
+            }
 
-    private static void function(ListNode head) {
+            while (stack.size() > 0) {
+                ListNode tmp = new ListNode(stack.pop());
+                tail.next = tmp;
+                tail = tail.next;
+            }
 
-        if(head.next != null)
-            function(head.next);
-
-        if(res.val < -5001)
-            res.val = head.val;
-        else
-            res.next = new ListNode(head.val);
+            return res.next;
     }
 }
 
