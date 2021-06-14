@@ -5,58 +5,51 @@ import java.util.Set;
 
 public class My {
     public boolean result(char[][] board, String word){
-        word = word.toLowerCase();
-        boolean[][] visited = new boolean[board.length][board[0].length];
 
-        for (int i = 0; i < board.length; i++){
-            for (int j = 0; j < board[0].length; j++){
-                char currChar = board[i][j];
-                currChar = Character.toLowerCase(currChar);
-                if (currChar != word.charAt(0))
-                    continue;
-
-                if(word.length() == 1)
-                    return true;
-
-                if(searchNextChar(board, i, j, 0, word, visited)) {
-                    return true;
+        for (int row = 0; row < board.length; row++) {
+            for (int col = 0; col < board[0].length; col++) {
+                if (word.charAt(0) == board[row][col]) {
+                    boolean[][] visited = new boolean[board.length][board[0].length];
+                    if (dfs(board, row, col, 0, word, visited))
+                        return true;
                 }
             }
         }
-
         return false;
     }
 
-    private boolean searchNextChar(char[][] board, int i, int j, int wordIndex, String word, boolean[][] visited) {
-        if (wordIndex == word.length())
-            return true;
+    private boolean dfs(char[][] board, int row, int col, int wordIndex,
+                        String word, boolean[][] visited) {
+        if (wordIndex == word.length()-1){
+            if (word.charAt(wordIndex) == board[row][col])
+                return true;
+            else
+                return false;
+        }
 
-        if (Character.toLowerCase(board[i][j]) != word.charAt(wordIndex))
-            return false;
+        visited[row][col] = true;
 
-        if(Character.toLowerCase(board[i][j]) == word.charAt(wordIndex) && wordIndex == word.length()-1)
-            return true;
+        int[] dirRow = new int[]{0, -1, 0, 1};
+        int[] dirCol = new int[]{-1, 0, 1, 0};
+        boolean exists = false;
 
-        int[] di = new int[]{0, -1, 0, 1};
-        int[] dj = new int[]{-1, 0, 1, 0};
+        for (int i = 0; i < 4; i++) {
+            int newRow = row + dirRow[i];
+            int newCol = col + dirCol[i];
 
-        visited[i][j] = true;
-
-        for (int dir = 0; dir < 4; dir++){
-            int newRow = i + di[dir];
-            int newCol = j + dj[dir];
             if (newRow < 0 || newRow > board.length-1
             || newCol < 0 || newCol > board[0].length-1)
                 continue;
-            if (visited[newRow][newCol])
-                continue;
 
-            if(searchNextChar(board, newRow, newCol, wordIndex + 1, word, visited)) {
-                visited[newRow][newCol] = true;
+            if (!visited[newRow][newCol] && word.charAt(wordIndex+1) == board[newRow][newCol])
+                exists = dfs(board,newRow, newCol, wordIndex + 1, word, visited);
+            if (exists)
                 return true;
-            }
         }
-        return false;
+
+        visited[row][col] = false;
+
+        return exists;
     }
 }
 
