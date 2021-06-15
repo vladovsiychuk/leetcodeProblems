@@ -3,48 +3,63 @@ package lru_cache_146;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class LRUCache {
-    HashMap<Integer,Integer> cache = new HashMap<>();
+class LRUCache {
+
+    Node head = new Node(0, 0), tail = new Node(0, 0);
+    Map<Integer, Node> map = new HashMap();
     int capacity;
-    List<Integer> leastRecents = new ArrayList<>();
 
-    public LRUCache(int capacity) {
-        this.capacity = capacity;
+    public LRUCache(int _capacity) {
+        capacity = _capacity;
+        head.next = tail;
+        tail.prev = head;
     }
 
     public int get(int key) {
-        if (!cache.containsKey(key))
+        if(map.containsKey(key)) {
+            Node node = map.get(key);
+            remove(node);
+            insert(node);
+            return node.value;
+        } else {
             return -1;
-
-        int indKey = leastRecents.indexOf(key);
-        int tmp = leastRecents.get(indKey);
-        leastRecents.remove(indKey);
-        leastRecents.add(0, tmp);
-        return cache.get(key);
+        }
     }
 
     public void put(int key, int value) {
-        if (cache.keySet().size() < capacity) {
-            cache.put(key, value);
-            leastRecents.add(0, key);
-            return;
+        if(map.containsKey(key)) {
+            remove(map.get(key));
         }
-
-        if (cache.containsKey(key)){
-            int indOfLeastKey = leastRecents.indexOf(key);
-            int tmp = leastRecents.get(indOfLeastKey);
-            leastRecents.remove(indOfLeastKey);
-            leastRecents.add(0,tmp);
-            cache.put(key, value);
+        if(map.size() == capacity) {
+            remove(tail.prev);
         }
+        insert(new Node(key, value));
+    }
 
-        int leastKey = leastRecents.get(leastRecents.size()-1);
-        cache.remove(leastKey);
-        int indOfLeastKey = leastRecents.indexOf(leastKey);
-        leastRecents.remove(indOfLeastKey);
-        cache.put(key, value);
-        leastRecents.add(0,key);
+    private void remove(Node node) {
+        map.remove(node.key);
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    private void insert(Node node){
+        map.put(node.key, node);
+        Node headNext = head.next;
+        head.next = node;
+        node.prev = head;
+        headNext.prev = node;
+        node.next = headNext;
+    }
+
+    class Node{
+        Node prev, next;
+        int key, value;
+        Node(int _key, int _value) {
+            key = _key;
+            value = _value;
+        }
     }
 }
 
