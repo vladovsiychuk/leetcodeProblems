@@ -1,31 +1,67 @@
 package longest_word_in_dictionary_720;
 
-import java.util.HashSet;
-import java.util.Set;
+import implement_trie_208.Trie;
+
+import java.util.HashMap;
 
 public class My {
     public String result(String[] words){
-        Set<String> dic = new HashSet<> ();
-        String biggest = "";
+        Trie trie = new Trie();
+        String longest = "";
+        for (String word : words)
+            trie.insert(word);
 
         for (String word : words){
-            StringBuilder string = new StringBuilder();
-            for (int i = 0; i < word.length(); i++){
-                string.append(word.charAt(i));
-                if(dic.contains(string)){
-                    if (string.length()>biggest.length())
-                        biggest = string.toString();
-                    else if (string.length()==biggest.length()){
-                        int comp = string.toString().compareTo(biggest);
-                        if (comp > 0)
-                            biggest = string.toString();
-                    }
-                }else {
-                    dic.add(string.toString());
+            if (trie.search(word)){
+                if (word.length()>longest.length())
+                    longest = word;
+                else if (word.length()== longest.length()){
+                    int comp = longest.compareTo(word);
+                    if (comp < 0)
+                        longest = word;
                 }
             }
         }
-        return biggest;
+        return longest;
+    }
+
+    class Trie {
+        TrieNode root;
+        public Trie (){
+            root = new TrieNode();
+        }
+
+        public void insert(String word){
+            TrieNode current = root;
+            for (char c : word.toCharArray()){
+                if (!current.edges.containsKey(c))
+                    current.edges.put(c, new TrieNode());
+                current = current.edges.get(c);
+            }
+            current.endWord = true;
+        }
+
+        public boolean search(String word) {
+            TrieNode current = root;
+            for (char c : word.toCharArray()){
+                if (!current.edges.containsKey(c))
+                    return false;
+                if (!current.edges.get(c).endWord)
+                    return false;
+                current = current.edges.get(c);
+            }
+            return current.endWord;
+        }
+
+        private class TrieNode {
+            HashMap<Character,TrieNode> edges;
+            boolean endWord;
+
+            public TrieNode(){
+                edges = new HashMap<>();
+                endWord = false;
+            }
+        }
     }
 }
 

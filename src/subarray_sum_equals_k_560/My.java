@@ -1,34 +1,24 @@
 package subarray_sum_equals_k_560;
 
+import java.util.HashMap;
+
 public class My {
     public int result(int[] nums, int k){
-        boolean[] visited = new boolean[nums.length];
+        HashMap<Integer,Integer> sums = new HashMap<>();
+        int sum = 0;
         int count = 0;
 
-        for (int i = 0; i < nums.length; i++) {
-            if (visited[i])
-                continue;
-            count++;
-            searchSum(visited, nums, k, i);
+        sums.put(0,1);
+
+        for (int n : nums){
+            sum += n;
+            if (sums.containsKey(sum-k)){
+                count += sums.get(sum-k);
+                sums.put(sum-k, sums.get(sum-k)+1);
+            }
+            sums.put(sum, 1);
         }
         return count;
-    }
-
-    private boolean searchSum(boolean[] visited, int[] nums, int k, int index) {
-        visited[index] = true;
-
-        int diff = k - nums[index];
-        if (diff <= 0)
-            return true;
-
-        for (int i = 0; i < nums.length; i++) {
-            if (visited[i])
-                continue;
-
-            if(searchSum(visited, nums, diff, i))
-                return true;
-        }
-        return false;
     }
 }
 

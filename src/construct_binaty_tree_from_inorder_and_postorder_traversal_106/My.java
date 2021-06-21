@@ -4,29 +4,56 @@ import java.util.HashMap;
 
 public class My {
     public TreeNode result(int[] inorder, int[] postorder){
-        HashMap<Integer,Integer> inorderIndexes = new HashMap<>();
-        TreeNode root = new TreeNode();
-        TreeNode tail = root;
         int n = inorder.length;
-        for (int i = 0; i < n; i++)
-            inorderIndexes.put(inorder[i],i);
+        HashMap<Integer,Integer> hm = new HashMap<>();
+        TreeNode root = new TreeNode();
+        root.val = postorder[n-1];
 
-        buildTree(tail,inorder,postorder,inorderIndexes);
+        for (int i = 0; i < n; i++)
+            hm.put(inorder[i],i);
+
+        int iIndex = hm.get(postorder[n-1]);
+        int isL = 0;
+        int ieL = iIndex-1;
+        int isR = iIndex+1;
+        int ieR = n-1;
+        int psL = 0;
+        int peL = psL + (ieL-isL);
+        int psR = peL+1;
+        int peR = n-2;
+
+        root.left = new TreeNode();
+        root.right = new TreeNode();
+
+        buildTree(root.left,isL,ieL,psL,peL,inorder,postorder,hm);
+        buildTree(root.right,isR,ieR,psR,peR,inorder,postorder,hm);
         return root;
     }
+    private void buildTree(TreeNode node, int is, int ie, int ps, int pe,
+                           int[] inorder, int[] postorder, HashMap<Integer,Integer> hm){
+        if (ie < is)
+            return;
 
-    private void buildTree(TreeNode tail, int[] inorder, int[] postorder, HashMap<Integer, Integer> inorderIndexes) {
-        int n = inorder.length;
+        node.val = postorder[pe];
 
-        int iStartL = 0;
-        int iEndL = inorderIndexes.get(postorder[n-1]);
-        int iStartR = iEndL;
-        int iEndR = n-1;
+        if (is == ie)
+        return;
 
-        int pStartL = 0;
-        int pEndL = iEndL;
-        int pStartR = iEndL;
-        int pEndR = n-2;
+        node.left = new TreeNode();
+        node.right = new TreeNode();
+
+        int iIndex = hm.get(postorder[pe]);
+        int isL = is;
+        int ieL = iIndex-1;
+        int isR = iIndex+1;
+        int ieR = ie;
+        int psL = ps;
+        int peL = ps+(ieL-isL);
+        int psR = ps+(ieL-isL)+1;
+        int peR = pe-1;
+        buildTree(node.left,isL,ieL,psL,peL,inorder,postorder,hm);
+        buildTree(node.right,isR,ieR,psR,peR,inorder,postorder,hm);
     }
+
 }
 

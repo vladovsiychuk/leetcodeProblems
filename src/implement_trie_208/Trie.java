@@ -3,45 +3,49 @@ package implement_trie_208;
 import java.util.HashMap;
 
 public class Trie {
-    HashMap<Character,Trie> edges;
-    boolean isWordEnd;
-
-    public Trie() {
-        edges = new HashMap<>();
-        isWordEnd=false;
+    TrieNode root;
+    public Trie(){
+        root = new TrieNode();
     }
 
     public void insert(String word) {
-        Trie current = this;
+        TrieNode current = root;
         for (char c : word.toCharArray()){
             if (!current.edges.containsKey(c))
-                current.edges.put(c,new Trie());
-            else
-                current = current.edges.get(c);
+                current.edges.put(c,new TrieNode());
+            current = current.edges.get(c);
         }
-        current.isWordEnd = true;
+        current.endWord = true;
     }
 
     public boolean search(String word) {
-        Trie current = this;
+        TrieNode current = root;
         for (char c : word.toCharArray()){
             if (!current.edges.containsKey(c))
                 return false;
-            else
-                current = current.edges.get(c);
+            current = current.edges.get(c);
         }
-        return current.isWordEnd;
+        return current.endWord;
     }
 
     public boolean startsWith(String prefix) {
-        Trie current = this;
+        TrieNode current = root;
         for (char c : prefix.toCharArray()){
             if (!current.edges.containsKey(c))
                 return false;
-            else
-                current = current.edges.get(c);
+            current = current.edges.get(c);
         }
-        return true;
+        return false;
+    }
+
+    private class TrieNode {
+        HashMap<Character,TrieNode> edges;
+        boolean endWord;
+
+        public TrieNode(){
+            edges = new HashMap<>();
+            endWord = false;
+        }
     }
 }
 
