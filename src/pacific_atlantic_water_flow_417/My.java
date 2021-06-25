@@ -11,16 +11,22 @@ public class My {
         Queue<CellData> queue_atlantic = new ArrayDeque<>();
         List<List<Integer>> result = new ArrayList<>();
 
+        for (int i = 0; i < n; i++){
+            for (int j = 0; j < m; j++){
+                cellData[i][j] = new CellData(i,j);
+            }
+        }
+
         for (int col = 0; col < m; col++) {
-            queue_pacific.add(new CellData(0, col, true, false));
-            cellData[0][col] = new CellData(0, col, true, false);
-            queue_atlantic.add(new CellData(n-1, col, false, true));
-            cellData[n-1][col] = new CellData(n-1, col, true, false);
+            cellData[0][col].is_pacific=true;
+            queue_pacific.add(cellData[0][col]);
+            cellData[n-1][col].is_atlantic=true;
+            queue_atlantic.add(cellData[n-1][col]);
         }for (int row = 0; row < n; row++) {
-            queue_pacific.add(new CellData(row, 0, true, false));
-            cellData[row][0] = new CellData(row, 0, true, false);
-            queue_atlantic.add(new CellData(row, m-1, false, true));
-            cellData[row][m-1] = new CellData(row, m-1, true, false);
+            cellData[row][0].is_pacific=true;
+            queue_pacific.add(cellData[row][0]);
+            cellData[row][m-1].is_atlantic=true;
+            queue_atlantic.add(cellData[row][m-1]);
         }
 
         int[] dRow = new int[]{0,-1,0,1};
@@ -33,15 +39,13 @@ public class My {
             for (int i = 0; i < 4; i++){
                 int newRow = row + dRow[i];
                 int newCol = col + dCol[i];
-                if (newRow < 0 || newRow > n-1 || newCol < 0 || newCol > m-1)
+                if (newRow < 0 || newRow > n-1 || newCol < 0 || newCol > m-1
+                    || cellData[newRow][newCol].is_pacific
+                    || heights[newRow][newCol] < heights[row][col])
                     continue;
 
-                if ((cellData[newRow][newCol] == null ||
-                        cellData[newRow][newCol].is_pacific == false) &&
-                        heights[row][col] <= heights[newRow][newCol]) {
-                    queue_pacific.add(new CellData(newRow, newCol, true, false));
-                    cellData[newRow][newCol] = new CellData(newRow,newCol,true, false);
-                }
+                cellData[newRow][newCol].is_pacific=true;
+                queue_pacific.add(cellData[newRow][newCol]);
             }
         }
 
@@ -50,25 +54,22 @@ public class My {
             int row = node.row;
             int col = node.col;
 
-            if(cellData[row][col] != null && cellData[row][col].is_pacific)
-                result.add(Arrays.asList(row,col));
+            if(cellData[row][col].is_pacific && !cellData[row][col].visited) {
+                result.add(Arrays.asList(row, col));
+                cellData[row][col].visited = true;
+            }
 
             for (int i = 0; i < 4; i++){
                 int newRow = row + dRow[i];
                 int newCol = col + dCol[i];
 
-                if (newRow < 0 || newRow > n-1 || newCol < 0 || newCol > m-1)
+                if (newRow < 0 || newRow > n-1 || newCol < 0 || newCol > m-1
+                        || cellData[newRow][newCol].is_atlantic
+                        || heights[newRow][newCol] < heights[row][col])
                     continue;
 
-                if ((cellData[newRow][newCol] == null &&
-                        cellData[newRow][newCol].is_atlantic == false)
-                        && heights[row][col] <= heights[newRow][newCol]) {
-                    queue_pacific.add(new CellData(newRow, newCol, false, true));
-                    if (cellData[newRow][newCol] != null)
-                        cellData[newRow][newCol].is_atlantic = true;
-                    else
-                        cellData[newRow][newCol] = new CellData(newRow,newCol,false,true);
-                }
+                cellData[newRow][newCol].is_atlantic=true;
+                queue_atlantic.add(cellData[newRow][newCol]);
             }
         }
         return result;
@@ -79,12 +80,14 @@ public class My {
         int col;
         boolean is_pacific;
         boolean is_atlantic;
+        boolean visited;
 
-        public CellData(int r, int c, boolean is_p, boolean is_a) {
+        public CellData(int r, int c) {
             row = r;
             col = c;
-            is_pacific = is_p;
-            is_atlantic = is_a;
+            is_pacific = false;
+            is_atlantic = false;
+            visited = false;
         }
     }
 }

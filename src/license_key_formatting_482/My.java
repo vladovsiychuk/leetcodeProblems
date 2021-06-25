@@ -4,33 +4,19 @@ import javax.xml.stream.events.Characters;
 
 public class My {
     public String result(String s, int k){
-        boolean firstDash = true;
-        StringBuilder result = new StringBuilder();
-        int tmp = k;
+        StringBuilder builder = new StringBuilder();
+        int count = 0;
 
-        for (char c : s.toCharArray()){
-            if(c=='-' && !firstDash)
-                continue;
-            if(firstDash)
-                result.append(Character.toUpperCase(c));
+        s = s.toUpperCase();
+        s = s.replaceAll("-", "");
 
-            if (!firstDash){
-                if (tmp > 0){
-                    result.append(Character.toUpperCase(c));
-                    tmp--;
-                } else {
-                    result.append('-');
-                    tmp = k;
-                }
-            }
-
-            if (c == '-' && firstDash)
-                firstDash = false;
-
+        for (int i = s.length()-1; i >= 0; i--){
+            if (count == 4)
+                builder.insert(0,'-');
+            builder.insert(0, s.charAt(i));
+            count = (count+1)%4;
         }
-        if (result.toString().charAt(result.length()-1) == '-')
-            result.deleteCharAt(result.length()-1);
-        return result.toString();
+        return builder.toString();
     }
 }
 
