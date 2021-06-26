@@ -1,44 +1,38 @@
 package degree_of_an_array_697;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class My {
     public static int result(int nums[]){
+        HashMap<Integer,Integer> counter = new HashMap<>();
+        HashMap<Integer, int[]> distance = new HashMap<>();
+        List<Integer> maxNums = new ArrayList<>();
+        int n = nums.length;
+        int max = 0;
+        int minSub = Integer.MAX_VALUE;
 
+        for (int i = 0; i < n; i++){
+            counter.put(nums[i], counter.getOrDefault(nums[i], 0)+1);
+            if (distance.containsKey(nums[i]))
+                distance.get(nums[i])[1] = i;
+            else
+                distance.put(nums[i], new int[]{i,i});
 
-        int recordCounts = 0;
-        int recordKey = -1;
-        int res = 0;
-        boolean start = false;
-        HashMap<Integer,Integer> tmp = new HashMap<Integer, Integer>();
-        for(Integer num: nums){
-            if(!tmp.containsKey(num)) {
-                tmp.put(num, 1);
-                if(recordCounts == 0){
-                    recordCounts = 1;
-                    recordKey = num;
-                }
-            }else {
-                tmp.put(num,tmp.get(num) + 1);
-                if(tmp.get(num) > recordCounts){
-                    recordCounts = tmp.get(num);
-                    recordKey = num;
-                }
-            }
+            if (counter.get(nums[i]) > max){
+                max = counter.get(nums[i]);
+                maxNums.clear();
+                maxNums.add(nums[i]);
+            } else if (counter.get(nums[i]) == max)
+                maxNums.add(nums[i]);
         }
-
-        for(Integer num: nums){
-            if(num == recordKey){
-                start = true;
-                recordCounts--;
-            }
-            if (start)
-                res++;
-            if (recordCounts == 0)
-                return res;
+        for (int val : maxNums){
+            int[] tmp = distance.get(val);
+            if (tmp[1] - tmp[0] + 1 < minSub)
+                minSub = tmp[1] - tmp[0] + 1;
         }
-
-        return -1;
+        return minSub;
     }
 }
 
