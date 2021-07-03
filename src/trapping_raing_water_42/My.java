@@ -3,29 +3,20 @@ package trapping_raing_water_42;
 public class My {
     public int result(int[] height){
         int n = height.length;
-        int left = 0;
-        int right = 0;
+        if (n == 0)
+            return 0;
+        int leftMax = height[0];
         int water = 0;
+        int[] rightMax = new int[n];
+        rightMax[n-1] = height[n-1];
 
-        while (left < n-1){
-            if (height[left] == 0) {
-                left++;
-                continue;
-            }
-            int currWater = 0;
-            boolean breaked = false;
-            for (right = left+1; right < n; right++){
-                if (height[right] >= height[left]){
-                    breaked = true;
-                    break;
-                }
-                currWater += height[left]-height[right];
-            }
-            if (breaked){
-                water += currWater;
-                left = right;
-            }else
-                left++;
+        for (int i = n-2; i >= 0; i--)
+            rightMax[i] = Math.max(height[i],rightMax[i+1]);
+
+        for (int i = 1; i < n; i++){
+            water += Math.max(0,Math.min(leftMax,rightMax[i])-height[i]);
+            if (height[i] > leftMax)
+                leftMax = height[i];
         }
         return water;
     }
