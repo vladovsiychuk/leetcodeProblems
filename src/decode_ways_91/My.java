@@ -1,30 +1,40 @@
 package decode_ways_91;
 
+import java.util.HashMap;
+
 public class My {
     public int result(String s){
         int n = s.length();
-        int[] dp = new int[n];
 
-        decode(dp, s, 0,n);
-        return dp[0];
+        if (s.charAt(0) == '0')
+            return 0;
+        else if (n == 1)
+            return 1;
+
+        HashMap<Integer, Integer> dp = new HashMap<>();
+        String left = s.substring(1,n);
+        String right = n > 2 ? s.substring(2,n) : "0";
+
+        return Integer.valueOf(s) <= 26 && Integer.valueOf(s) >= 0 ?
+                helper(left,dp) + helper(right,dp) + 1
+                : helper(left, dp) + helper(right, dp);
     }
 
-    private int decode(int[] dp, String s, int start, int n){
-        if (start >= n)
+    private int helper(String s, HashMap<Integer, Integer> dp) {
+        int n = s.length();
+        if (s.charAt(0) == '0')
             return 0;
-        else if (dp[start] != 0){
-            return dp[start];
-        } else if (s.charAt(start) == '0') {
-            return 0;
-        }
+        else if (n == 1)
+            return 1;
+        else if (n <= 2 && dp.containsKey(Integer.valueOf(s)))
+            return dp.get(Integer.valueOf(s));
 
-        int num = Integer.valueOf(s.substring(start,n));
+        String left = s.substring(1,n);
+        String right = n > 2 ? s.substring(2,n) : "0";
 
-        int res = num <= 26 && num > 0 ? 1 : 0;
-        dp[start] = res + decode(dp, s, start+1,n);
-        if (start < n-1 && Integer.parseInt(s.substring(start,start+2)) <= 26)
-            dp[start] += decode(dp,s,start+2,n);
-        return dp[start];
+        return Integer.valueOf(s) <= 26 && Integer.valueOf(s) >= 0 ?
+                helper(left,dp) + helper(right,dp) + 1
+                : helper(left, dp) + helper(right, dp);
     }
 }
 
